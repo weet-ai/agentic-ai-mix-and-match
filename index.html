@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic AI Use Case Scoring Framework</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .section-header {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .section-content {
+            padding: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #374151;
+        }
+        .input-group select, .input-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .weight-info {
+            font-size: 12px;
+            color: #6b7280;
+            margin-left: 10px;
+        }
+        .score-display {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #f3f4f6;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .results {
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+        }
+        .matrix-position {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .high-high { background: #fee2e2; color: #991b1b; }
+        .high-medium { background: #fef3c7; color: #92400e; }
+        .high-low { background: #d1fae5; color: #065f46; }
+        .medium-high { background: #fef3c7; color: #92400e; }
+        .medium-medium { background: #f3f4f6; color: #374151; }
+        .medium-low { background: #dbeafe; color: #1e40af; }
+        .low-high { background: #fee2e2; color: #991b1b; }
+        .low-medium { background: #f3f4f6; color: #374151; }
+        .low-low { background: #f3f4f6; color: #374151; }
+        .recommendation {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Agentic AI Use Case Scoring Framework</h1>
+            <p>Evaluate and prioritize AI agent initiatives with data-driven decision making</p>
+        </div>
+        
+        <div class="content">
+            <!-- Project Info -->
+            <div class="section">
+                <div class="section-header">Project Information</div>
+                <div class="section-content">
+                    <div class="input-group">
+                        <label>Use Case Name:</label>
+                        <input type="text" id="projectName" placeholder="e.g., Customer Service Chatbot">
+                    </div>
+                    <div class="input-group">
+                        <label>Description:</label>
+                        <input type="text" id="projectDescription" placeholder="Brief description of the AI agent use case">
+                    </div>
+                </div>
+            </div>
+
+            <div class="two-column">
+                <!-- Business Value Section -->
+                <div class="section">
+                    <div class="section-header">Business Value Assessment</div>
+                    <div class="section-content">
+                        <div class="input-group">
+                            <label>Revenue Generation <span class="weight-info">(Weight: 40%)</span></label>
+                            <select id="revenue" onchange="calculateScores()">
+                                <option value="">Select...</option>
+                                <option value="1">1 - Minimal: No direct revenue impact</option>
+                                <option value="2">2 - Low: <$100K annual or <2% improvement</option>
+                                <option value="3">3 - Medium: $100K-$1M annual or 2-10% improvement</option>
+                                <option value="4">4 - High: $1M-$5M annual or 10-25% improvement</option>
+                                <option value="5">5 - Very High: >$5M annual or >25% improvement</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Operational Efficiency <span class="weight-info">(Weight: 35%)</span></label>
+                            <select id="efficiency" onchange="calculateScores()">
+                                <option value="">Select...</option>
+                                <option value="1">1 - Minimal: <5% time savings</option>
+                                <option value="2">2 - Low: 5-15% time savings</option>
+                                <option value="3">3 - Medium: 15-30% time savings</option>
+                                <option value="4">4 - High: 30-60% time savings or 1-3 FTE</option>
+                                <option value="5">5 - Very High: >60% time savings or >3 FTE</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Risk Reduction <span class="weight-info">(Weight: 25%)</span></label>
+                            <select id="riskReduction" onchange="calculateScores()">
+                                <option value="">Select...</option>
+                                <option value="1">1 - Minimal: Minor error reduction</option>
+                                <option value="2">2 - Low: Moderate error reduction</option>
+                                <option value="3">3 - Medium: Significant error reduction</option>
+                                <option value="4">4 - High: Major risk mitigation</option>
+                                <option value="5">5 - Very High: Critical risk elimination</option>
+                            </select>
+                        </div>
+                        
+                        <div class="result-item">
+                            <span>Business Value Score:</span>
+                            <span class="score-display" id="businessValueScore">0/100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weighted Risk Section -->
+                <div class="section">
+                    <div class="section-header">Weighted Risk Assessment</div>
+                    <div class="section-content">
+                        <div class="input-group">
+                            <label>Development Complexity <span class="weight-info">(Weight: 25%)</span></label>
+                            <select id="complexity" onchange="calculateScores()">
+                                <option value="">Select...</option>
+                                <option value="1">1 - Low: Simple integration, off-the-shelf</option>
+                                <option value="2">2 - Low-Medium: Few integrations, some customization</option>
+                                <option value="3">3 - Medium: Multiple integrations, moderate custom dev</option>
+                                <option value="4">4 - Medium-High: Complex integrations, new skills needed</option>
+                                <option value="5">5 - High: Highly complex, cutting-edge, major skill gaps</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Non-Deterministic Risk <span class="weight-info">(Weight: 20%)</span></label>
+                            <select id="nonDeterministic" onchange="calculateScores()">
+                                <option value="">Select...</option>
+                                <option value="1">1 - Low: Predictable outputs, simple tasks</option>
+                                <option value="2">2 - Low-Medium: Some variability, structured generation</option>
+                                <option value="3">3 - Medium: Moderate variability, content generation</option>
+                                <option value="4">4 - Medium-High: High variability, complex reasoning</option>
+                                <option value="5">5 - High: Highly unpredictable, autonomous decisions</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Time/Delivery Risk <span class="weight-info">(Weight: 15%)</span></label>
+                            <select id="timeRisk" onchange="calculateScores()">
+                                <option value="">Select...</option>
+                                <option value="1">1 - Low: Proven tech, <3 months</option>
+                                <option value="2">2 - Low-Medium: Established approach, 3-6 months</option>
+                                <option value="3">3 - Medium: Some unknowns, 6-9 months</option>
+                                <option value="4">4 - Medium-High: Significant unknowns, 9-12 months</option>
+                                <option value="5">5 - High: Experimental, >12 months</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Compliance & Regulatory <span class="weight-info">(Weight: 20%)</span></label>
+                            <select id="compliance" onchange="calculateScores()">
+                                <option value="">Select...</option>
+                                <option value="1">1 - Low: No specific regulations</option>
+                                <option value="2">2 - Low-Medium: Basic compliance requirements</option>
+                                <option value="3">3 - Medium: Moderate regulatory oversight</option>
+                                <option value="4">4 - Medium-High: Strict regulations (HIPAA, financial)</option>
+                                <option value="5">5 - High: Highly regulated, potential regulatory action</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Bias & Fairness Risk <span class="weight-info">(Weight: 10%)</span></label>
+                            <select id="biasRisk" onchange="calculateScores()">
+                                <option value="">Select...</option>
+                                <option value="1">1 - Low: No human-impacting decisions</option>
+                                <option value="2">2 - Low-Medium: Limited human impact</option>
+                                <option value="3">3 - Medium: Moderate human impact</option>
+                                <option value="4">4 - Medium-High: Significant impact (hiring, lending)</option>
+                                <option value="5">5 - High: Critical human impact, high discrimination potential</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Customer vs Internal Facing <span class="weight-info">(Weight: 10%)</span></label>
+                            <select id="customerFacing" onchange="calculateScores()">
+                                <option value="">Select...</option>
+                                <option value="1">1 - Internal Only: No customer visibility</option>
+                                <option value="2">2 - Internal-Primary: Minimal customer impact</option>
+                                <option value="3">3 - Hybrid: Internal tools affecting customer experience</option>
+                                <option value="4">4 - Customer-Secondary: Customer-facing but not primary</option>
+                                <option value="5">5 - Customer-Primary: Primary customer touchpoint</option>
+                            </select>
+                        </div>
+                        
+                        <div class="result-item">
+                            <span>Weighted Risk Score:</span>
+                            <span class="score-display" id="weightedRiskScore">0/100</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results">
+                <h3>Assessment Results</h3>
+                <div class="result-item">
+                    <span>Business Value Level:</span>
+                    <span id="businessValueLevel">Not Calculated</span>
+                </div>
+                <div class="result-item">
+                    <span>Risk Level:</span>
+                    <span id="riskLevel">Not Calculated</span>
+                </div>
+                
+                <div class="matrix-position" id="matrixPosition">
+                    Complete the assessment above to see matrix position
+                </div>
+                
+                <div class="recommendation" id="recommendation">
+                    Recommendation will appear here based on your scores
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateScores() {
+            // Get business value inputs
+            const revenue = parseFloat(document.getElementById('revenue').value) || 0;
+            const efficiency = parseFloat(document.getElementById('efficiency').value) || 0;
+            const riskReduction = parseFloat(document.getElementById('riskReduction').value) || 0;
+            
+            // Get risk inputs
+            const complexity = parseFloat(document.getElementById('complexity').value) || 0;
+            const nonDeterministic = parseFloat(document.getElementById('nonDeterministic').value) || 0;
+            const timeRisk = parseFloat(document.getElementById('timeRisk').value) || 0;
+            const compliance = parseFloat(document.getElementById('compliance').value) || 0;
+            const biasRisk = parseFloat(document.getElementById('biasRisk').value) || 0;
+            const customerFacing = parseFloat(document.getElementById('customerFacing').value) || 0;
+            
+            // Calculate business value score
+            const businessValueScore = Math.round((revenue * 0.4 + efficiency * 0.35 + riskReduction * 0.25) * 20);
+            
+            // Calculate weighted risk score
+            const weightedRiskScore = Math.round((complexity * 0.25 + nonDeterministic * 0.20 + timeRisk * 0.15 + compliance * 0.20 + biasRisk * 0.10 + customerFacing * 0.10) * 20);
+            
+            // Update displays
+            document.getElementById('businessValueScore').textContent = businessValueScore + '/100';
+            document.getElementById('weightedRiskScore').textContent = weightedRiskScore + '/100';
+            
+            // Determine levels
+            const businessLevel = businessValueScore <= 40 ? 'Low' : businessValueScore <= 70 ? 'Medium' : 'High';
+            const riskLevel = weightedRiskScore <= 40 ? 'Low' : weightedRiskScore <= 70 ? 'Medium' : 'High';
+            
+            document.getElementById('businessValueLevel').textContent = businessLevel;
+            document.getElementById('riskLevel').textContent = riskLevel;
+            
+            // Update matrix position and recommendation
+            updateMatrixPosition(businessLevel, riskLevel);
+        }
+        
+        function updateMatrixPosition(businessLevel, riskLevel) {
+            const matrixElement = document.getElementById('matrixPosition');
+            const recommendationElement = document.getElementById('recommendation');
+            
+            const position = businessLevel.toLowerCase() + '-' + riskLevel.toLowerCase();
+            
+            // Clear all classes
+            matrixElement.className = 'matrix-position';
+            recommendationElement.className = 'recommendation';
+            
+            // Add appropriate class
+            matrixElement.classList.add(position);
+            recommendationElement.classList.add(position);
+            
+            // Set content based on position
+            const positions = {
+                'high-low': {
+                    position: '⭐ High Value, Low Risk',
+                    recommendation: '✅ PRIORITY: Approve, prioritize, and skip the line if needed. This is a clear winner that should be fast-tracked.'
+                },
+                'high-medium': {
+                    position: '▶️ High Value, Medium Risk', 
+                    recommendation: '🔄 APPROVE: Proceed with minimal controls and periodic oversight. Worth the investment given high value potential.'
+                },
+                'high-high': {
+                    position: '❓ High Value, High Risk',
+                    recommendation: '⚠️ CONDITIONAL: Requires detailed evaluation. Consider conditional approval with significant controls, or reassess if risk can be mitigated.'
+                },
+                'medium-low': {
+                    position: '▶️ Medium Value, Low Risk',
+                    recommendation: '✅ APPROVE: Good candidate for implementation with minimal controls and periodic oversight.'
+                },
+                'medium-medium': {
+                    position: '❓ Medium Value, Medium Risk',
+                    recommendation: '🤔 EVALUATE: Requires careful consideration of likelihood of generating value vs risk. May approve with controls or defer.'
+                },
+                'medium-high': {
+                    position: '⏸️ Medium Value, High Risk',
+                    recommendation: '⏸️ PAUSE: Put on hold with possibility of reassessing. Risk likely outweighs medium value potential.'
+                },
+                'low-low': {
+                    position: '⏸️ Low Value, Low Risk',
+                    recommendation: '⏸️ PAUSE: Put on hold with possibility of reassessing as capabilities improve or business priorities change.'
+                },
+                'low-medium': {
+                    position: '⏹️ Low Value, Medium Risk',
+                    recommendation: '❌ REJECT: Risk outweighs limited value potential. Focus resources on higher-value opportunities.'
+                },
+                'low-high': {
+                    position: '⏹️ Low Value, High Risk',
+                    recommendation: '❌ REJECT: Clear reject. High risk with low value is not a viable investment.'
+                }
+            };
+            
+            const result = positions[position];
+            if (result) {
+                matrixElement.textContent = result.position;
+                recommendationElement.textContent = result.recommendation;
+            }
+        }
+    </script>
+</body>
+</html>
